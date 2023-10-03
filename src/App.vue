@@ -1,26 +1,39 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <main-screen v-if="statusMatch==='default'" @onStart="onHandleBeforeStart($event)" />
+  <interact-screen v-if="statusMatch==='match'" :cardContext="settings.cardsContext"/>
 </template>
-
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-
+import MainScreen from './components/MainScreen.vue';
+import InteractScreen from './components/InteractScreen.vue';
+import { shuffled } from './utils/array'
 export default {
   name: "App",
-  components: {
-    HelloWorld,
+  data() {
+    return {
+      settings: {
+        totalOfBlocks: 0,
+        cardsContext:[],
+        startedAt: null
+      },
+      statusMatch: 'default'
+    }
   },
+  methods: {
+    onHandleBeforeStart(config) {
+      this.settings.totalOfBlocks = config.totalOfBlocks;
+      const firstCards = Array.from({length: this.settings.totalOfBlocks/2}, (_, i)=>i+1)
+      const secondCards = [...firstCards]
+      const cards = [...secondCards, ... firstCards]
+      this.settings.cardsContext = shuffled(shuffled(shuffled(shuffled(cards))))
+      console.log(this.settings.cardsContext, this.settings)
+      this.settings.startedAt = new Date().getTime();
+      console.log('befor game', config)
+
+      //data really
+      this. statusMatch= 'match'
+
+    }
+  },
+  components: {MainScreen,InteractScreen},
 };
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
